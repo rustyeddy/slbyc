@@ -9,7 +9,6 @@ func main() {
 	flag.Parse()
 
 	todoist := newTodoist()
-	// todoist.GetProjects()
 
 	name := todoist.ProjectName
 	proj := todoist.GetProject(name)

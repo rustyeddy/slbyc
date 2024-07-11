@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
-	"net/http"
 	"os/user"
 	"path/filepath"
 )
@@ -41,6 +40,9 @@ func newTodoist() (t *todoist) {
 		log.Fatalf("Failed to decode config JSON %v", err)
 	}
 
+	restcli = &restClient{
+		todo: t,
+	}
 	return t
 }
 
@@ -64,31 +66,10 @@ type Project struct {
 type Projects []*Project
 
 func (t *todoist) GetProjects() (projs *Projects) {
-	url := t.APIURL + "projects"
 
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+	jbytes := restcli.Get("projects")
 
-	req.Header.Add("Authorization", "Bearer "+t.getToken())
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		log.Fatalf("HTTP Request failed: %d %s", resp.StatusCode, resp.Status)
-	}
-
-	jbytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = json.Unmarshal(jbytes, &projects)
+	err := json.Unmarshal(jbytes, &projects)
 	if err != nil {
 		log.Fatalf("Failed to unmarshal projects: %v", err)
 	}
@@ -97,6 +78,7 @@ func (t *todoist) GetProjects() (projs *Projects) {
 }
 
 func (t *todoist) GetProject(name string) (proj *Project) {
+
 	if len(projects) == 0 {
 		t.GetProjects()
 	}
