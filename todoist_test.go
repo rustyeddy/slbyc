@@ -24,25 +24,16 @@ func TestProjects(t *testing.T) {
 	todo := newTodoist()
 
 	projs := todo.GetProjects()
-	if len(projs) == 0 {
-		t.Errorf("Expected projects (> 0) got (0)")
-	}
-}
-
-func TestProject(t *testing.T) {
-	todo := newTodoist()
-
-	projs := todo.GetProjects()
-	if len(projs) == 0 {
+	if len(*projs) == 0 {
 		t.Errorf("Expected projects (> 0) got (0)")
 	}
 
-	name := "SlBYC House Tasks"
+	name := todo.ProjectName
 	proj := todo.GetProject(name)
 	if proj == nil {
 		t.Errorf("Expected project (%s) got nil", name)
 	} else if proj.Name != name {
-		t.Errorf("Expected project (%s) got (%s)", name.proj.Name)
+		t.Errorf("Expected project (%s) got (%s)", name, proj.Name)
 	}
 
 }

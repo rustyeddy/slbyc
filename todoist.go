@@ -10,8 +10,9 @@ import (
 )
 
 type todoist struct {
-	Token  string `json:"token"`
-	APIURL string `json:"apiurl"`
+	Token       string `json:"token"`
+	APIURL      string `json:"apiurl"`
+	ProjectName string `json:"project_name"`
 }
 
 var projects Projects

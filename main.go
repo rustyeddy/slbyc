@@ -11,7 +11,7 @@ func main() {
 	todoist := newTodoist()
 	// todoist.GetProjects()
 
-	name := "SlBYC House Tasks"
+	name := todoist.ProjectName
 	proj := todoist.GetProject(name)
 	fmt.Printf("Project: %+v\n", proj)
 }
