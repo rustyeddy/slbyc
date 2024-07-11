@@ -15,6 +15,8 @@ type todoist struct {
 	APIURL string `json:"apiurl"`
 }
 
+var projects Projects
+
 func newTodoist() (t *todoist) {
 
 	user, err := user.Current()
@@ -50,6 +52,17 @@ func (t *todoist) getAPIURL() string {
 	return t.APIURL
 }
 
+type Project struct {
+	ID           string `json:"id"`
+	Name         string `json:"name"`
+	ParentID     string `json:"parent_id"`
+	Order        int    `json:"order"`
+	CommentCount int    `json:"comment_count"`
+	URL          string `json:"url"`
+}
+
+type Projects []Project
+
 func (t *todoist) GetProjects() {
 	url := t.APIURL + "projects"
 
@@ -70,9 +83,19 @@ func (t *todoist) GetProjects() {
 		log.Fatalf("HTTP Request failed: %d %s", resp.StatusCode, resp.Status)
 	}
 
-	projects, err := ioutil.ReadAll(resp.Body)
+	jbytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("projects: %s\n", projects)
+	// fmt.Printf("projects: %s\n", projects)
+
+	err = json.Unmarshal(jbytes, &projects)
+	if err != nil {
+		log.Fatalf("Failed to unmarshal projects: %v", err)
+	}
+
+	for _, p := range projects {
+		fmt.Printf("Project: %+v\n", p)
+	}
+
 }
