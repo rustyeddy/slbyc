@@ -2,14 +2,17 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os/user"
 	"path/filepath"
 )
 
 type todoist struct {
-	Token string `json:"token"`
+	Token  string `json:"token"`
+	APIURL string `json:"apiurl"`
 }
 
 func newTodoist() (t *todoist) {
@@ -41,4 +44,35 @@ func newTodoist() (t *todoist) {
 
 func (t *todoist) getToken() string {
 	return t.Token
+}
+
+func (t *todoist) getAPIURL() string {
+	return t.APIURL
+}
+
+func (t *todoist) GetProjects() {
+	url := t.APIURL + "projects"
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	req.Header.Add("Authorization", "Bearer "+t.getToken())
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		log.Fatalf("HTTP Request failed: %d %s", resp.StatusCode, resp.Status)
+	}
+
+	projects, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("projects: %s\n", projects)
 }

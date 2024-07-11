@@ -10,3 +10,12 @@ func TestToken(t *testing.T) {
 		t.Error("Expected a token string but got the empty string")
 	}
 }
+
+func TestAPIURL(t *testing.T) {
+	todo := newTodoist()
+
+	apiurl := todo.getAPIURL()
+	if apiurl == "" {
+		t.Error("Expected a token string but got the empty string")
+	}
+}
