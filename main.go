@@ -1,5 +1,13 @@
 package main
 
+import (
+	"flag"
+	"fmt"
+)
+
 func main() {
-	println("Hello, world!")
+	flag.Parse()
+
+	todoist := newTodoist()
+	fmt.Printf("Token: %s\n", todoist.getToken())
 }
