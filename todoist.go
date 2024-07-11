@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -61,9 +60,9 @@ type Project struct {
 	URL          string `json:"url"`
 }
 
-type Projects []Project
+type Projects []*Project
 
-func (t *todoist) GetProjects() {
+func (t *todoist) GetProjects() (projs *Projects) {
 	url := t.APIURL + "projects"
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -87,15 +86,27 @@ func (t *todoist) GetProjects() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// fmt.Printf("projects: %s\n", projects)
 
 	err = json.Unmarshal(jbytes, &projects)
 	if err != nil {
 		log.Fatalf("Failed to unmarshal projects: %v", err)
 	}
 
-	for _, p := range projects {
-		fmt.Printf("Project: %+v\n", p)
+	return &projects
+}
+
+func (t *todoist) GetProject(name string) (proj *Project) {
+	if len(projects) == 0 {
+		t.GetProjects()
+	}
+	if len(projects) == 0 {
+		log.Fatalf("Failed to get projects")
 	}
 
+	for _, proj = range projects {
+		if proj.Name == name {
+			return proj
+		}
+	}
+	return nil
 }
