@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 )
 
 type restClient struct {
@@ -12,8 +13,12 @@ type restClient struct {
 
 var restcli *restClient
 
-func (rc restClient) Get(endpoint string) (jbytes []byte) {
+func (rc restClient) Get(endpoint string, params *url.Values) (jbytes []byte) {
+
 	url := rc.todo.APIURL + endpoint
+	if params != nil {
+		url += "?" + params.Encode()
+	}
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -36,6 +41,5 @@ func (rc restClient) Get(endpoint string) (jbytes []byte) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	return jbytes
 }
