@@ -100,37 +100,46 @@ func (p *Projects) GetProject(name string) (proj *Project) {
 	return nil
 }
 
-type Task struct {
-	CreatorID string `json:"creator_id"`
+type DueDate struct {
+	Date      string `json:"date"`
+	Recurring bool   `json:"is_recurring"`
+	DateTime  string `json:"date_time"`
+	When      string `json:"string"`
+	TimeZone  string `json:"time_zone"`
+}
 
-	/*
-	   "created_at": "2019-12-11T22:36:50.000000Z",
-	   "assignee_id": "2671362",
-	   "assigner_id": "2671355",
-	   "comment_count": 10,
-	   "is_completed": false,
-	   "content": "Buy Milk",
-	   "description": "",
-	   "due": {
-	       "date": "2016-09-01",
-	       "is_recurring": false,
-	       "datetime": "2016-09-01T12:00:00.000000Z",
-	       "string": "tomorrow at 12",
-	       "timezone": "Europe/Moscow"
-	   },
-	   "duration": {
-	        "amount": 15,
-	        "unit": "minute"
-	   },
-	   "id": "2995104339",
-	   "labels": ["Food", "Shopping"],
-	   "order": 1,
-	   "priority": 1,
-	   "project_id": "2203306141",
-	   "section_id": "7025",
-	   "parent_id": "2995104589",
-	   "url": "https://todoist.com/showTask?id=2995104339"
-	*/
+type Duration struct {
+}
+
+type Due struct {
+	Amount int    `json:"amount"`
+	Unit   string `json:"unit"`
+}
+
+type Task struct {
+	ID         string `json:"ID"`
+	CreatorID  string `json:"creator_id"`
+	AssigneeID string `json:"assignee_id"`
+	AssingorID string `json:"assignor_id"`
+	ParentID   string `json:"parent_id"`
+	SectionID  string `json:"section_id"`
+	ProjectID  string `json:"project_id"`
+
+	CreatedAt   string `json:"created_at"`
+	Content     string `json:"content"`
+	Description string `json:"description"`
+
+	Lables   []string `json:"labels"`
+	Order    int      `json:"order"`
+	Priority int      `json:"priority"`
+
+	Complete bool `json:"is_completed"`
+	Comments int  `json:"comment_count"`
+
+	DueDate
+	Duration
+
+	URL string `json:"url"`
 }
 
 type Tasks []*Task
